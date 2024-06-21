@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('./models');
 const os = require('os');
-const userController = require('./controllers/userController');
+const timeController = require('./controllers/timeController');
 const temperatureController = require('./controllers/temperatureController');
 
 
@@ -62,6 +62,11 @@ app.post('/temperatures', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+app.get('/check-time', (req, res) => {
+    const allowed = timeController.isTimeAllowed();
+    res.json({ allowed });
 });
 
 app.listen(port, '0.0.0.0', () => {
