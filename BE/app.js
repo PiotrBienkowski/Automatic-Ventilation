@@ -52,5 +52,5 @@ app.post('/temperatures', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`API działa na http://localhost:${port}`);
+    console.log(`API works http://localhost:${port}`);
 });
