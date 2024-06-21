@@ -12,6 +12,9 @@ exports.addTemperature = async (username, password, inside, outside) => {
 };
 
 exports.getAllTemperatures = async () => {
-    const temperatures = await db.Temperature.findAll();
+    const temperatures = await db.Temperature.findAll({
+        order: [['createdAt', 'DESC']],
+        limit: 100
+    });
     return temperatures;
 };
