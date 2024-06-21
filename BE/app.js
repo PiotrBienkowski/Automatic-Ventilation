@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('./models');
+const os = require('os');
 const userController = require('./controllers/userController');
 const temperatureController = require('./controllers/temperatureController');
 
@@ -17,6 +18,18 @@ db.sequelize.sync({ force: false })
     console.error('Error synchronizing models with the database:', err);
 });
 
+const getLocalIPAddress = () => {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+      for (const net of interfaces[name]) {
+        const { family, internal, address } = net;
+        if (family === 'IPv4' && !internal) {
+          return address;
+        }
+      }
+    }
+    return 'localhost';
+  };
 
 app.get('/ping', (req, res) => {
     const currentDate = new Date();
@@ -51,6 +64,7 @@ app.post('/temperatures', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`API works http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    const localIP = getLocalIPAddress();
+    console.log(`API działa na http://${localIP}:${port}`);
 });
