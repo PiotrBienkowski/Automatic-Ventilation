@@ -3,11 +3,13 @@
 #include <DallasTemperature.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
+#include <ArduinoJson.h> 
 
 const char* ssid = "WIFI_NAME";
 const char* password = "WIFI_PASSWORD";
 
 const char* serverName = "http://IP:PORT/temperatures";
+const char* timeCheckUrl = "http://IP:PORT/check-time";
 
 #define ONE_WIRE_BUS1 2
 #define ONE_WIRE_BUS2 0
@@ -29,6 +31,8 @@ const unsigned long temperatureCheckInterval = 10000;
 
 unsigned long lastAPICheck = 0;
 const unsigned long apiCheckInterval = 120000;
+
+bool canRunFans = false;
 
 void setup() {
   Serial.begin(115200);
@@ -63,7 +67,7 @@ void loop() {
     temp1 = sensors1.getTempCByIndex(0);
     temp2 = sensors2.getTempCByIndex(0);
 
-    if (temp2 < temp1 && temp2 <= 26.0) {
+    if (canRunFans && temp2 < temp1 && temp2 <= 26.0) {
       digitalWrite(FAN_PIN, HIGH);
       Serial.println("Wentylator włączony");
     } else {
@@ -85,6 +89,23 @@ void loop() {
     if (WiFi.status() == WL_CONNECTED) {
       WiFiClient client;
       HTTPClient http;
+
+      http.begin(client, timeCheckUrl);
+      int httpResponseCode = http.GET();
+      if (httpResponseCode > 0) {
+        String payload = http.getString();
+        Serial.println("Time check response: ");
+        Serial.println(payload);
+
+        DynamicJsonDocument doc(1024);
+        deserializeJson(doc, payload);
+        canRunFans = doc["allowed"];
+      } else {
+        Serial.print("Error on time check request: ");
+        Serial.println(httpResponseCode);
+      }
+      http.end();
+
       http.begin(client, serverName);
       http.addHeader("Content-Type", "application/json");
 
@@ -94,7 +115,7 @@ void loop() {
       jsonData += temp2;
       jsonData += ",\"username\":\"user_1\",\"password\":\"pass\"}";
 
-      int httpResponseCode = http.POST(jsonData);
+      httpResponseCode = http.POST(jsonData);
 
       if (httpResponseCode > 0) {
         String payload = http.getString();
