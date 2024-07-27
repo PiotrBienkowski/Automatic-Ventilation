@@ -11,7 +11,7 @@ NOTE: the solution only works if the apartment is high enough, otherwise there i
 
 ## Project
 I placed one thermometer by the fans outside, and another in the room.
-![Group 1 (1)](https://github.com/user-attachments/assets/a3835f23-9192-4bbb-af1f-e4127cb28170)
+![Group 1 (1)](https://github.com/user-attachments/assets/af793e26-3bde-405c-88f5-94d4c56812e5)
 
 ## Elements to be cut out
-![Group 3 (1)](https://github.com/user-attachments/assets/355fdd63-1b8f-475f-bd79-5f2ba2685927)
+![Group 3 (1)](https://github.com/user-attachments/assets/b6c6adbb-48c9-48a6-a584-8ebe06436304)
