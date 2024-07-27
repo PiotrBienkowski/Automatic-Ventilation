@@ -67,7 +67,7 @@ void loop() {
     temp1 = sensors1.getTempCByIndex(0);
     temp2 = sensors2.getTempCByIndex(0);
 
-    if (canRunFans && temp2 < temp1 && temp2 <= 26.0) {
+    if (canRunFans && temp2 < temp1) {
       digitalWrite(FAN_PIN, HIGH);
       Serial.println("Wentylator włączony");
     } else {
